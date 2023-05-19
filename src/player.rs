@@ -1,8 +1,8 @@
 use crate::SCALE;
 use bevy::prelude::*;
 
-const GRAVITY: f32 = 9.8;
-const ACCELERATION_COEFFICIENT: f32 = 25.0;
+const GRAVITY: f32 = -300.0;
+const JUMP_FORCE: f32 = 500.0;
 
 pub struct PlayerPlugin;
 
@@ -33,7 +33,7 @@ fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(Player)
         .insert(Acceleration {
-            magnitude: Vec3::new(0.0, ACCELERATION_COEFFICIENT * SCALE * -GRAVITY, 0.0),
+            magnitude: Vec3::new(0.0, SCALE * GRAVITY, 0.0),
             velocity: Vec3::ZERO,
         });
 }
@@ -62,6 +62,6 @@ fn keyboard_input(
     };
 
     if keyboard.just_pressed(KeyCode::Space) {
-        acceleration.velocity = Vec3::new(0.0, 500.0, 0.0);
+        acceleration.velocity = Vec3::new(0.0, JUMP_FORCE, 0.0);
     }
 }
