@@ -41,6 +41,18 @@ fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
         });
 }
 
+fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
+    let Ok((entity, transform)) = player.get_single() else {
+        return;
+    };
+
+    let Vec3 { y, .. } = transform.translation();
+    if y <= (-RESOLUTION.1 + SCALE * SPRITE_SIZE.1) / 2.0 {
+        // TODO: pause the game and show "You Lost!" UI
+        commands.entity(entity).despawn();
+    }
+}
+
 fn apply_acceleration(
     mut accelerations: Query<(&mut Acceleration, &mut Transform)>,
     time: Res<Time>,
@@ -66,17 +78,5 @@ fn keyboard_input(
 
     if keyboard.just_pressed(KeyCode::Space) {
         acceleration.velocity = Vec3::new(0.0, JUMP_FORCE, 0.0);
-    }
-}
-
-fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
-    let Ok((entity, transform)) = player.get_single() else {
-        return;
-    };
-
-    let Vec3 { y, .. } = transform.translation();
-    if y <= (-RESOLUTION.1 + SCALE * SPRITE_SIZE.1) / 2.0 {
-        // TODO: pause the game and show "You Lost!" UI
-        commands.entity(entity).despawn();
     }
 }
