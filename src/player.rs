@@ -69,7 +69,7 @@ fn pipe_collision(
     for pipe_transform in &pipes {
         let collision = collide(
             player_transform.translation(),
-            SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
+            0.75 * SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
             pipe_transform.translation(),
             SCALE * Vec2::from(PIPE_SPRITE_SIZE),
         );
