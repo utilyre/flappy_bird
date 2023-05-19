@@ -40,7 +40,7 @@ fn spawner(
         return;
     }
 
-    let empty_idx = rand::thread_rng().gen_range(0..NUMBER_OF_GRIDS - 1);
+    let empty_idx = rand::thread_rng().gen_range(1..NUMBER_OF_GRIDS - 2);
     for i in 0..NUMBER_OF_GRIDS {
         if i == empty_idx || i == empty_idx + 1 {
             continue;
