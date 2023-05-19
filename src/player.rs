@@ -1,5 +1,7 @@
-use crate::SCALE;
+use crate::{RESOLUTION, SCALE};
 use bevy::prelude::*;
+
+const SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
 
 const GRAVITY: f32 = -300.0;
 const JUMP_FORCE: f32 = 500.0;
@@ -9,6 +11,7 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_player)
+            .add_system(dead_zone)
             .add_system(apply_acceleration)
             .add_system(keyboard_input);
     }
@@ -63,5 +66,17 @@ fn keyboard_input(
 
     if keyboard.just_pressed(KeyCode::Space) {
         acceleration.velocity = Vec3::new(0.0, JUMP_FORCE, 0.0);
+    }
+}
+
+fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
+    let Ok((entity, transform)) = player.get_single() else {
+        return;
+    };
+
+    let Vec3 { y, .. } = transform.translation();
+    if y <= (-RESOLUTION.1 + SCALE * SPRITE_SIZE.1) / 2.0 {
+        // TODO: pause the game and show "You Lost!" UI
+        commands.entity(entity).despawn();
     }
 }
