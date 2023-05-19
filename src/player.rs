@@ -1,7 +1,10 @@
-use crate::{RESOLUTION, SCALE};
-use bevy::prelude::*;
+use crate::{
+    pipe::{Pipe, PIPE_SPRITE_SIZE},
+    RESOLUTION, SCALE,
+};
+use bevy::{prelude::*, sprite::collide_aabb::collide};
 
-const SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
+const PLAYER_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
 
 const GRAVITY: f32 = -300.0;
 const JUMP_FORCE: f32 = 500.0;
@@ -12,6 +15,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_player)
             .add_system(dead_zone)
+            .add_system(pipe_collision)
             .add_system(apply_acceleration)
             .add_system(keyboard_input);
     }
@@ -47,9 +51,34 @@ fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), W
     };
 
     let Vec3 { y, .. } = transform.translation();
-    if y <= (-RESOLUTION.1 + SCALE * SPRITE_SIZE.1) / 2.0 {
+    if y <= (-RESOLUTION.1 + SCALE * PLAYER_SPRITE_SIZE.1) / 2.0 {
         // TODO: pause the game and show "You Lost!" UI
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
+fn pipe_collision(
+    mut commands: Commands,
+    player: Query<(Entity, &GlobalTransform), With<Player>>,
+    pipes: Query<&GlobalTransform, With<Pipe>>,
+) {
+    let Ok((player_entity, player_transform)) = player.get_single() else {
+        return;
+    };
+
+    for pipe_transform in &pipes {
+        let collision = collide(
+            player_transform.translation(),
+            SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
+            pipe_transform.translation(),
+            SCALE * Vec2::from(PIPE_SPRITE_SIZE),
+        );
+
+        if collision.is_some() {
+            // TODO: pause the game and show "You Lost!" UI
+            commands.entity(player_entity).despawn_recursive();
+            break;
+        }
     }
 }
 

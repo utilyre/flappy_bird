@@ -3,8 +3,8 @@ use bevy::prelude::*;
 use rand::Rng;
 use std::time::Duration;
 
-const SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
-const NUMBER_OF_GRIDS: u32 = (RESOLUTION.1 / (SCALE * SPRITE_SIZE.1)) as u32;
+pub const PIPE_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
+const NUMBER_OF_GRIDS: u32 = (RESOLUTION.1 / (SCALE * PIPE_SPRITE_SIZE.1)) as u32;
 
 const SPAWN_INTERVAL: u64 = 2000;
 const SPEED: f32 = 200.0;
@@ -24,7 +24,7 @@ impl Plugin for PipePlugin {
 }
 
 #[derive(Component)]
-struct Pipe;
+pub struct Pipe;
 
 #[derive(Resource)]
 struct SpawnTimer(Timer);
@@ -50,8 +50,8 @@ fn spawner(
             .spawn(SpriteBundle {
                 texture: asset_server.load("pipe.png"),
                 transform: Transform::from_xyz(
-                    (RESOLUTION.0 + SCALE * SPRITE_SIZE.0) / 2.0,
-                    -RESOLUTION.1 / 2.0 + SCALE * ((i as f32 + 0.5) * SPRITE_SIZE.1),
+                    (RESOLUTION.0 + SCALE * PIPE_SPRITE_SIZE.0) / 2.0,
+                    -RESOLUTION.1 / 2.0 + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.1),
                     0.0,
                 )
                 .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
@@ -63,7 +63,7 @@ fn spawner(
 
 fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {
     for (entity, transform) in &pipes {
-        if transform.translation().x < (-RESOLUTION.0 - SCALE * SPRITE_SIZE.0) / 2.0 {
+        if transform.translation().x < (-RESOLUTION.0 - SCALE * PIPE_SPRITE_SIZE.0) / 2.0 {
             commands.entity(entity).despawn_recursive();
         }
     }
