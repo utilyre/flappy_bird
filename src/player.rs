@@ -9,7 +9,8 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_player)
-            .add_system(apply_acceleration);
+            .add_system(apply_acceleration)
+            .add_system(keyboard_input);
     }
 }
 
@@ -49,5 +50,18 @@ fn apply_acceleration(
         // Δv = at
         let a = acceleration.magnitude;
         acceleration.velocity += a * time.delta_seconds();
+    }
+}
+
+fn keyboard_input(
+    mut player: Query<&mut Acceleration, With<Player>>,
+    keyboard: Res<Input<KeyCode>>,
+) {
+    let Ok(mut acceleration) = player.get_single_mut() else {
+        return;
+    };
+
+    if keyboard.just_pressed(KeyCode::Space) {
+        acceleration.velocity = Vec3::new(0.0, 500.0, 0.0);
     }
 }
