@@ -5,6 +5,7 @@ use std::time::Duration;
 
 pub const PIPE_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
 const COLUMN_SIZE: u32 = (RESOLUTION.1 / (SCALE * PIPE_SPRITE_SIZE.1)) as u32;
+const EMPTY_COLUMNS: u32 = 2;
 
 const SPAWN_INTERVAL: u64 = 2000;
 const SPEED: f32 = 200.0;
@@ -40,9 +41,9 @@ fn spawner(
         return;
     }
 
-    let empty_idx = rand::thread_rng().gen_range(1..COLUMN_SIZE - 2);
+    let empty_idx = rand::thread_rng().gen_range(1..COLUMN_SIZE - EMPTY_COLUMNS);
     for i in 0..COLUMN_SIZE {
-        if i == empty_idx || i == empty_idx + 1 {
+        if i >= empty_idx && i < empty_idx + EMPTY_COLUMNS {
             continue;
         }
 
