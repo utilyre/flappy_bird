@@ -18,6 +18,7 @@ impl Plugin for PipePlugin {
             TimerMode::Repeating,
         )))
         .add_system(spawner)
+        .add_system(despawner)
         .add_system(movement);
     }
 }
@@ -49,7 +50,7 @@ fn spawner(
             .spawn(SpriteBundle {
                 texture: asset_server.load("pipe.png"),
                 transform: Transform::from_xyz(
-                    RESOLUTION.0 / 2.0 + SCALE * SPRITE_SIZE.0,
+                    (RESOLUTION.0 + SCALE * SPRITE_SIZE.0) / 2.0,
                     -RESOLUTION.1 / 2.0 + SCALE * ((i as f32 + 0.5) * SPRITE_SIZE.1),
                     0.0,
                 )
@@ -57,6 +58,14 @@ fn spawner(
                 ..default()
             })
             .insert(Pipe);
+    }
+}
+
+fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {
+    for (entity, transform) in &pipes {
+        if transform.translation().x < (-RESOLUTION.0 - SCALE * SPRITE_SIZE.0) / 2.0 {
+            commands.entity(entity).despawn_recursive();
+        }
     }
 }
 
