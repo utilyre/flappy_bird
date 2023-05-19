@@ -1,7 +1,9 @@
 use crate::pipe::PipePlugin;
 use bevy::prelude::*;
+use player::PlayerPlugin;
 
 mod pipe;
+mod player;
 
 const BACKGROUND: (u8, u8, u8) = (30, 35, 37);
 const RESOLUTION: (f32, f32) = (1280.0, 720.0);
@@ -28,6 +30,7 @@ fn main() {
         )))
         .add_startup_system(spawn_camera)
         // Plugins
+        .add_plugin(PlayerPlugin)
         .add_plugin(PipePlugin)
         //
         .run();
