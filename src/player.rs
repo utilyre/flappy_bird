@@ -1,4 +1,5 @@
 use crate::{
+    physics::acceleration::Acceleration,
     pipe::{Pipe, PIPE_SPRITE_SIZE},
     RESOLUTION, SCALE,
 };
@@ -16,19 +17,12 @@ impl Plugin for PlayerPlugin {
         app.add_startup_system(spawn_player)
             .add_system(dead_zone)
             .add_system(pipe_collision)
-            .add_system(apply_acceleration)
             .add_system(keyboard_input);
     }
 }
 
 #[derive(Component)]
 struct Player;
-
-#[derive(Component)]
-struct Acceleration {
-    magnitude: Vec3,
-    velocity: Vec3,
-}
 
 fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
@@ -79,21 +73,6 @@ fn pipe_collision(
             commands.entity(player_entity).despawn_recursive();
             break;
         }
-    }
-}
-
-fn apply_acceleration(
-    mut accelerations: Query<(&mut Acceleration, &mut Transform)>,
-    time: Res<Time>,
-) {
-    for (mut acceleration, mut transform) in &mut accelerations {
-        // Δx = ½aΔt² + v₀t
-        transform.translation += 0.5 * acceleration.magnitude * time.delta_seconds().powi(2)
-            + acceleration.velocity * time.delta_seconds();
-
-        // Δv = at
-        let a = acceleration.magnitude;
-        acceleration.velocity += a * time.delta_seconds();
     }
 }
 

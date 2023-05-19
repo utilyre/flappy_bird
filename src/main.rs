@@ -1,7 +1,9 @@
 use crate::pipe::PipePlugin;
 use bevy::prelude::*;
+use physics::acceleration::apply_acceleration;
 use player::PlayerPlugin;
 
+mod physics;
 mod pipe;
 mod player;
 
@@ -29,6 +31,7 @@ fn main() {
             BACKGROUND.2,
         )))
         .add_startup_system(spawn_camera)
+        .add_system(apply_acceleration)
         // Plugins
         .add_plugin(PlayerPlugin)
         .add_plugin(PipePlugin)
