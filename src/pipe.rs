@@ -5,7 +5,7 @@ use std::time::Duration;
 
 pub const PIPE_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
 const COLUMN_SIZE: u32 = (RESOLUTION.1 / (SCALE * PIPE_SPRITE_SIZE.1)) as u32;
-const EMPTY_COLUMNS: u32 = 2;
+const EMPTY_COLUMNS: u32 = 3;
 
 const SPAWN_INTERVAL: u64 = 2000;
 const SPEED: f32 = 200.0;
