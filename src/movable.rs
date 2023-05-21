@@ -24,10 +24,18 @@ impl Movable {
     }
 }
 
-#[derive(Default)]
 pub struct MovableBuilder {
     acceleration: Vec3,
     velocity: Vec3,
+}
+
+impl Default for MovableBuilder {
+    fn default() -> Self {
+        Self {
+            acceleration: Vec3::splat(1.0),
+            velocity: Vec3::splat(0.0),
+        }
+    }
 }
 
 impl MovableBuilder {
