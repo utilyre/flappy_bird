@@ -7,6 +7,7 @@ use bevy::{prelude::*, sprite::collide_aabb::collide};
 use std::time::Duration;
 
 const PLAYER_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
+const HITBOX_RATIO: f32 = 0.75;
 const ANIMATION_INTERVAL: u64 = 200;
 const ANIMATION_FRAMES: &[usize] = &[0, 1];
 
@@ -111,7 +112,7 @@ fn pipe_collision(
     for pipe_transform in &pipes {
         let collision = collide(
             player_transform.translation(),
-            0.75 * SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
+            HITBOX_RATIO * SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
             pipe_transform.translation(),
             SCALE * Vec2::from(PIPE_SPRITE_SIZE),
         );
