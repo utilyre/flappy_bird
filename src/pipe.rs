@@ -1,4 +1,4 @@
-use crate::{RESOLUTION, SCALE};
+use crate::{movable::Movable, RESOLUTION, SCALE};
 use bevy::prelude::*;
 use rand::Rng;
 use std::time::Duration;
@@ -19,8 +19,7 @@ impl Plugin for PipePlugin {
             TimerMode::Repeating,
         )))
         .add_system(spawner)
-        .add_system(despawner)
-        .add_system(movement);
+        .add_system(despawner);
     }
 }
 
@@ -58,7 +57,12 @@ fn spawner(
                 .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
                 ..default()
             })
-            .insert(Pipe);
+            .insert(Pipe)
+            .insert(
+                Movable::builder()
+                    .velocity(Vec3::new(-SPEED, 0.0, 0.0))
+                    .build(),
+            );
     }
 }
 
@@ -67,11 +71,5 @@ fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), Wi
         if transform.translation().x < (-RESOLUTION.0 - SCALE * PIPE_SPRITE_SIZE.0) / 2.0 {
             commands.entity(entity).despawn_recursive();
         }
-    }
-}
-
-fn movement(mut pipes: Query<&mut Transform, With<Pipe>>, time: Res<Time>) {
-    for mut transform in &mut pipes {
-        transform.translation.x -= SPEED * time.delta_seconds();
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    physics::acceleration::Acceleration,
+    movable::Movable,
     pipe::{Pipe, PIPE_SPRITE_SIZE},
     RESOLUTION, SCALE,
 };
@@ -33,10 +33,11 @@ fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         })
         .insert(Player)
-        .insert(Acceleration {
-            magnitude: Vec3::new(0.0, SCALE * GRAVITY, 0.0),
-            velocity: Vec3::ZERO,
-        });
+        .insert(
+            Movable::builder()
+                .acceleration(Vec3::new(0.0, SCALE * GRAVITY, 0.0))
+                .build(),
+        );
 }
 
 fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
@@ -76,15 +77,12 @@ fn pipe_collision(
     }
 }
 
-fn keyboard_input(
-    mut player: Query<&mut Acceleration, With<Player>>,
-    keyboard: Res<Input<KeyCode>>,
-) {
-    let Ok(mut acceleration) = player.get_single_mut() else {
+fn keyboard_input(mut player: Query<&mut Movable, With<Player>>, keyboard: Res<Input<KeyCode>>) {
+    let Ok(mut movable) = player.get_single_mut() else {
         return;
     };
 
     if keyboard.just_pressed(KeyCode::Space) {
-        acceleration.velocity = Vec3::new(0.0, JUMP_FORCE, 0.0);
+        movable.set_velocity(Vec3::new(0.0, JUMP_FORCE, 0.0));
     }
 }
