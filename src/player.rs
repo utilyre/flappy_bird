@@ -4,8 +4,11 @@ use crate::{
     RESOLUTION, SCALE,
 };
 use bevy::{prelude::*, sprite::collide_aabb::collide};
+use std::time::Duration;
 
 const PLAYER_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
+const ANIMATION_INTERVAL: u64 = 200;
+const ANIMATION_FRAMES: &[usize] = &[0, 1];
 
 const GRAVITY: f32 = -300.0;
 const JUMP_FORCE: f32 = 500.0;
@@ -15,6 +18,7 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_player)
+            .add_system(animate_sprite)
             .add_system(dead_zone)
             .add_system(pipe_collision)
             .add_system(keyboard_input);
@@ -24,20 +28,61 @@ impl Plugin for PlayerPlugin {
 #[derive(Component)]
 struct Player;
 
-fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
+#[derive(Component, Default)]
+struct Animation {
+    timer: Timer,
+    index: usize,
+}
+
+fn spawn_player(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+) {
+    let texture_atlas = TextureAtlas::from_grid(
+        asset_server.load("bird.png"),
+        PLAYER_SPRITE_SIZE.into(),
+        ANIMATION_FRAMES.len(),
+        1,
+        None,
+        None,
+    );
+
     commands
-        .spawn(SpriteBundle {
-            // TODO: cycle through bird_01.png and bird_02.png for animation
-            texture: asset_server.load("bird_01.png"),
+        .spawn(SpriteSheetBundle {
+            texture_atlas: texture_atlases.add(texture_atlas),
+            sprite: TextureAtlasSprite::new(ANIMATION_FRAMES[0]),
             transform: Transform::from_xyz(0.0, 0.0, 1.0).with_scale(Vec3::new(SCALE, SCALE, 1.0)),
             ..default()
         })
         .insert(Player)
+        .insert(Animation {
+            timer: Timer::new(
+                Duration::from_millis(ANIMATION_INTERVAL),
+                TimerMode::Repeating,
+            ),
+            ..default()
+        })
         .insert(
             Movable::builder()
                 .acceleration(Vec3::new(0.0, SCALE * GRAVITY, 0.0))
                 .build(),
         );
+}
+
+fn animate_sprite(
+    mut animations: Query<(&mut TextureAtlasSprite, &mut Animation)>,
+    time: Res<Time>,
+) {
+    for (mut sprite, mut animation) in &mut animations {
+        animation.timer.tick(time.delta());
+        if !animation.timer.just_finished() {
+            continue;
+        }
+
+        animation.index = (animation.index + 1) % ANIMATION_FRAMES.len();
+        sprite.index = ANIMATION_FRAMES[animation.index];
+    }
 }
 
 fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
