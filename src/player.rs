@@ -17,7 +17,7 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_player)
+        app.add_startup_system(spawn)
             .add_system(animate_sprite)
             .add_system(dead_zone)
             .add_system(pipe_collision)
@@ -34,7 +34,7 @@ struct Animation {
     index: usize,
 }
 
-fn spawn_player(
+fn spawn(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
