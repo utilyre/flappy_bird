@@ -14,7 +14,7 @@ pub struct PipePlugin;
 
 impl Plugin for PipePlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Pipe>()
+        app.register_type::<PipeBlock>()
             .init_resource::<SpawnTimer>()
             .insert_resource(SpawnTimer(Timer::new(
                 Duration::from_millis(SPAWN_INTERVAL),
@@ -27,7 +27,7 @@ impl Plugin for PipePlugin {
 
 #[derive(Default, Component, Reflect)]
 #[reflect(Component)]
-pub struct Pipe;
+pub struct PipeBlock;
 
 #[derive(Default, Resource, Reflect)]
 #[reflect(Resource)]
@@ -62,7 +62,7 @@ fn spawner(
                 ..default()
             })
             .insert(Name::new("Pipe Block"))
-            .insert(Pipe)
+            .insert(PipeBlock)
             .insert(
                 Movable::builder()
                     .velocity(Vec3::new(-SPEED, 0.0, 0.0))
@@ -71,7 +71,7 @@ fn spawner(
     }
 }
 
-fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {
+fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {
     for (entity, transform) in &pipes {
         if transform.translation().x < 0.5 * (-RESOLUTION.x - SCALE * PIPE_SPRITE_SIZE.x) {
             commands.entity(entity).despawn_recursive();
