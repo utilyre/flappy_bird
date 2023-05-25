@@ -153,6 +153,6 @@ fn handle_input(mut player: Query<&mut Movable, With<Player>>, keyboard: Res<Inp
     };
 
     if keyboard.just_pressed(KeyCode::Space) {
-        movable.set_velocity(Vec3::new(0.0, JUMP_FORCE, 0.0));
+        movable.set_velocity(JUMP_FORCE * Vec3::Y);
     }
 }
