@@ -5,7 +5,10 @@ pub struct ScorePlugin;
 
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(Score(0)).add_system(counter);
+        app.insert_resource(Score(0))
+            .add_startup_system(spawn_text)
+            .add_system(count)
+            .add_system(update);
     }
 }
 
@@ -13,11 +16,45 @@ impl Plugin for ScorePlugin {
 #[reflect(Component)]
 struct ScoreCounted;
 
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
+struct ScoreText;
+
 #[derive(Default, Resource, Reflect)]
 #[reflect(Resource)]
 struct Score(u32);
 
-fn counter(
+fn spawn_text(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands
+        .spawn(
+            TextBundle::from_section(
+                "SCORE: 0",
+                TextStyle {
+                    font: asset_server.load("fonts/MinecraftRegular.otf"),
+                    font_size: 24.0,
+                    color: Color::WHITE,
+                },
+            )
+            .with_text_alignment(TextAlignment::Center)
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    top: Val::Px(16.0),
+                    ..default()
+                },
+                margin: UiRect {
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    ..default()
+                },
+                ..default()
+            }),
+        )
+        .insert(Name::new("Score Text"))
+        .insert(ScoreText);
+}
+
+fn count(
     mut commands: Commands,
     player: Query<&GlobalTransform, With<Player>>,
     pipes: Query<(Entity, &GlobalTransform, Option<&ScoreCounted>), With<Pipe>>,
@@ -37,7 +74,13 @@ fn counter(
 
         score.0 += 1;
         commands.entity(pipe_entity).insert(ScoreCounted);
-
-        println!("Score = {}", score.0);
     }
+}
+
+fn update(mut text: Query<&mut Text, With<ScoreText>>, score: Res<Score>) {
+    let Ok(mut text) = text.get_single_mut() else {
+        return;
+    };
+
+    text.sections[0].value = format!("SCORE: {:03}", score.0);
 }
