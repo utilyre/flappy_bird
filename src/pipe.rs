@@ -50,6 +50,7 @@ fn spawner(
 
     commands
         .spawn(SpriteBundle {
+            // FIXME: a small default sprite appears in the center of the entity
             transform: Transform::from_xyz(
                 0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x),
                 0.0,
