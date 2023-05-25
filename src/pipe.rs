@@ -20,8 +20,8 @@ impl Plugin for PipePlugin {
                 Duration::from_millis(SPAWN_INTERVAL),
                 TimerMode::Repeating,
             )))
-            .add_system(spawner)
-            .add_system(despawner);
+            .add_system(spawn)
+            .add_system(despawn);
     }
 }
 
@@ -37,7 +37,7 @@ pub struct PipeBlock;
 #[reflect(Resource)]
 struct SpawnTimer(Timer);
 
-fn spawner(
+fn spawn(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     time: Res<Time>,
@@ -85,7 +85,7 @@ fn spawner(
         });
 }
 
-fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {
+fn despawn(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {
     for (entity, transform) in &pipes {
         if transform.translation().x < -0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x) {
             commands.entity(entity).despawn_recursive();

@@ -22,9 +22,9 @@ impl Plugin for PlayerPlugin {
             .register_type::<Animation>()
             .add_startup_system(spawn)
             .add_system(animate_sprite)
-            .add_system(dead_zone)
-            .add_system(pipe_collision)
-            .add_system(keyboard_input);
+            .add_system(check_deadzone)
+            .add_system(collide_with_pipe)
+            .add_system(handle_input);
     }
 }
 
@@ -91,7 +91,7 @@ fn animate_sprite(
     }
 }
 
-fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
+fn check_deadzone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
     let Ok((entity, transform)) = player.get_single() else {
         return;
     };
@@ -105,7 +105,7 @@ fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), W
     }
 }
 
-fn pipe_collision(
+fn collide_with_pipe(
     mut commands: Commands,
     player: Query<(Entity, &GlobalTransform), With<Player>>,
     pipes: Query<&GlobalTransform, With<PipeBlock>>,
@@ -130,7 +130,7 @@ fn pipe_collision(
     }
 }
 
-fn keyboard_input(mut player: Query<&mut Movable, With<Player>>, keyboard: Res<Input<KeyCode>>) {
+fn handle_input(mut player: Query<&mut Movable, With<Player>>, keyboard: Res<Input<KeyCode>>) {
     let Ok(mut movable) = player.get_single_mut() else {
         return;
     };
