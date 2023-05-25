@@ -97,7 +97,7 @@ fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), W
     };
 
     let Vec3 { y, .. } = transform.translation();
-    if y <= 0.5 * (-RESOLUTION.y - SCALE * PLAYER_SPRITE_SIZE.y)
+    if y <= -0.5 * (RESOLUTION.y + SCALE * PLAYER_SPRITE_SIZE.y)
         || y >= 0.5 * (RESOLUTION.y + SCALE * PLAYER_SPRITE_SIZE.y)
     {
         // TODO: pause the game and show "You Lost!" UI

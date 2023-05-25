@@ -72,7 +72,7 @@ fn spawner(
                         texture: asset_server.load("pipe.png"),
                         transform: Transform::from_xyz(
                             0.0,
-                            0.5 * -RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
+                            -0.5 * RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
                             0.0,
                         )
                         .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
@@ -86,7 +86,7 @@ fn spawner(
 
 fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {
     for (entity, transform) in &pipes {
-        if transform.translation().x < 0.5 * (-RESOLUTION.x - SCALE * PIPE_SPRITE_SIZE.x) {
+        if transform.translation().x < -0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x) {
             commands.entity(entity).despawn_recursive();
         }
     }
