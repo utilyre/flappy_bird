@@ -8,7 +8,7 @@ mod pipe;
 mod player;
 
 const BACKGROUND: (u8, u8, u8) = (30, 35, 37);
-const RESOLUTION: (f32, f32) = (1280.0, 720.0);
+const RESOLUTION: Vec2 = Vec2::new(1280.0, 720.0);
 const SCALE: f32 = 4.5;
 
 // TODO: Add enemies

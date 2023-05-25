@@ -3,8 +3,8 @@ use bevy::prelude::*;
 use rand::Rng;
 use std::time::Duration;
 
-pub const PIPE_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
-const COLUMN_SIZE: u32 = (RESOLUTION.1 / (SCALE * PIPE_SPRITE_SIZE.1)) as u32;
+pub const PIPE_SPRITE_SIZE: Vec2 = Vec2::new(16.0, 16.0);
+const COLUMN_SIZE: u32 = (RESOLUTION.y / (SCALE * PIPE_SPRITE_SIZE.y)) as u32;
 const EMPTY_COLUMNS: u32 = 3;
 
 const SPAWN_INTERVAL: u64 = 2000;
@@ -50,8 +50,8 @@ fn spawner(
             .spawn(SpriteBundle {
                 texture: asset_server.load("pipe.png"),
                 transform: Transform::from_xyz(
-                    0.5 * (RESOLUTION.0 + SCALE * PIPE_SPRITE_SIZE.0),
-                    0.5 * -RESOLUTION.1 + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.1),
+                    0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x),
+                    0.5 * -RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
                     0.0,
                 )
                 .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
@@ -68,7 +68,7 @@ fn spawner(
 
 fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {
     for (entity, transform) in &pipes {
-        if transform.translation().x < 0.5 * (-RESOLUTION.0 - SCALE * PIPE_SPRITE_SIZE.0) {
+        if transform.translation().x < 0.5 * (-RESOLUTION.x - SCALE * PIPE_SPRITE_SIZE.x) {
             commands.entity(entity).despawn_recursive();
         }
     }

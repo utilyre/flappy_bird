@@ -6,7 +6,7 @@ use crate::{
 use bevy::{prelude::*, sprite::collide_aabb::collide};
 use std::time::Duration;
 
-const PLAYER_SPRITE_SIZE: (f32, f32) = (16.0, 16.0);
+const PLAYER_SPRITE_SIZE: Vec2 = Vec2::new(16.0, 16.0);
 const HITBOX_RATIO: f32 = 0.75;
 const ANIMATION_INTERVAL: u64 = 200;
 const ANIMATION_FRAMES: &[usize] = &[0, 1];
@@ -42,7 +42,7 @@ fn spawn(
 ) {
     let texture_atlas = TextureAtlas::from_grid(
         asset_server.load("bird.png"),
-        PLAYER_SPRITE_SIZE.into(),
+        PLAYER_SPRITE_SIZE,
         ANIMATION_FRAMES.len(),
         1,
         None,
@@ -92,8 +92,8 @@ fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), W
     };
 
     let Vec3 { y, .. } = transform.translation();
-    if y <= 0.5 * (-RESOLUTION.1 - SCALE * PLAYER_SPRITE_SIZE.1)
-        || y >= 0.5 * (RESOLUTION.1 + SCALE * PLAYER_SPRITE_SIZE.1)
+    if y <= 0.5 * (-RESOLUTION.y - SCALE * PLAYER_SPRITE_SIZE.y)
+        || y >= 0.5 * (RESOLUTION.y + SCALE * PLAYER_SPRITE_SIZE.y)
     {
         // TODO: pause the game and show "You Lost!" UI
         commands.entity(entity).despawn_recursive();
@@ -112,9 +112,9 @@ fn pipe_collision(
     for pipe_transform in &pipes {
         let collision = collide(
             player_transform.translation(),
-            HITBOX_RATIO * SCALE * Vec2::from(PLAYER_SPRITE_SIZE),
+            HITBOX_RATIO * SCALE * PLAYER_SPRITE_SIZE,
             pipe_transform.translation(),
-            SCALE * Vec2::from(PIPE_SPRITE_SIZE),
+            SCALE * PIPE_SPRITE_SIZE,
         );
 
         if collision.is_some() {
