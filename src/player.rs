@@ -45,7 +45,7 @@ fn spawn(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     let texture_atlas = TextureAtlas::from_grid(
-        asset_server.load("bird.png"),
+        asset_server.load("sprites/bird.png"),
         PLAYER_SPRITE_SIZE,
         ANIMATION_FRAMES.len(),
         1,

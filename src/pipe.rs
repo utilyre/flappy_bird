@@ -70,7 +70,7 @@ fn spawner(
 
                 builder
                     .spawn(SpriteBundle {
-                        texture: asset_server.load("pipe.png"),
+                        texture: asset_server.load("sprites/pipe.png"),
                         transform: Transform::from_xyz(
                             0.0,
                             -0.5 * RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
