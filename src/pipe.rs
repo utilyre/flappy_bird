@@ -61,6 +61,7 @@ fn spawner(
                 .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
                 ..default()
             })
+            .insert(Name::new("Pipe Block"))
             .insert(Pipe)
             .insert(
                 Movable::builder()

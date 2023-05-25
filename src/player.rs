@@ -60,6 +60,7 @@ fn spawn(
             transform: Transform::from_xyz(0.0, 0.0, 1.0).with_scale(Vec3::new(SCALE, SCALE, 1.0)),
             ..default()
         })
+        .insert(Name::new("Player"))
         .insert(Player)
         .insert(Animation {
             timer: Timer::new(
