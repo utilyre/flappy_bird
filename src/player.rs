@@ -24,6 +24,7 @@ impl Plugin for PlayerPlugin {
             .add_system(animate_sprite)
             .add_system(check_deadzone)
             .add_system(collide_with_pipe)
+            .add_system(start_game)
             .add_system(handle_input);
     }
 }
@@ -68,12 +69,7 @@ fn spawn(
                 TimerMode::Repeating,
             ),
             ..default()
-        })
-        .insert(
-            Movable::builder()
-                .acceleration(Vec3::new(0.0, SCALE * GRAVITY, 0.0))
-                .build(),
-        );
+        });
 }
 
 fn animate_sprite(
@@ -127,6 +123,27 @@ fn collide_with_pipe(
             commands.entity(player_entity).despawn_recursive();
             break;
         }
+    }
+}
+
+// TODO: GameState: InGame, Paused, NotStarted
+
+fn start_game(
+    mut commands: Commands,
+    player: Query<Entity, (With<Player>, Without<Movable>)>,
+    keyboard: Res<Input<KeyCode>>,
+) {
+    let Ok(entity) = player.get_single() else {
+        return;
+    };
+
+    if keyboard.just_pressed(KeyCode::Space) {
+        commands.entity(entity).insert(
+            Movable::builder()
+                .acceleration(SCALE * GRAVITY * Vec3::Y)
+                .velocity(JUMP_FORCE * Vec3::Y)
+                .build(),
+        );
     }
 }
 
