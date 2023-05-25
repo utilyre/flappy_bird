@@ -3,10 +3,12 @@ use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use movable::MovablePlugin;
 use player::PlayerPlugin;
+use score::ScorePlugin;
 
 mod movable;
 mod pipe;
 mod player;
+mod score;
 
 const BACKGROUND: (u8, u8, u8) = (30, 35, 37);
 const RESOLUTION: Vec2 = Vec2::new(1280.0, 720.0);
@@ -42,6 +44,7 @@ fn main() {
         .add_plugin(MovablePlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(PipePlugin)
+        .add_plugin(ScorePlugin)
         // END
         .run();
 }

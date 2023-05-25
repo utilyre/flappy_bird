@@ -27,6 +27,10 @@ impl Plugin for PipePlugin {
 
 #[derive(Default, Component, Reflect)]
 #[reflect(Component)]
+pub struct Pipe;
+
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
 pub struct PipeBlock;
 
 #[derive(Default, Resource, Reflect)]
@@ -44,31 +48,40 @@ fn spawner(
         return;
     }
 
-    let empty_idx = rand::thread_rng().gen_range(1..COLUMN_SIZE - EMPTY_COLUMNS);
-    for i in 0..COLUMN_SIZE {
-        if i >= empty_idx && i < empty_idx + EMPTY_COLUMNS {
-            continue;
-        }
+    commands
+        .spawn(SpriteBundle {
+            transform: Transform::from_xyz(
+                0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x),
+                0.0,
+                0.0,
+            ),
+            ..default()
+        })
+        .insert(Name::new("Pipe"))
+        .insert(Pipe)
+        .insert(Movable::builder().velocity(SPEED * Vec3::NEG_X).build())
+        .with_children(|builder| {
+            let empty_idx = rand::thread_rng().gen_range(1..COLUMN_SIZE - EMPTY_COLUMNS);
+            for i in 0..COLUMN_SIZE {
+                if i >= empty_idx && i < empty_idx + EMPTY_COLUMNS {
+                    continue;
+                }
 
-        commands
-            .spawn(SpriteBundle {
-                texture: asset_server.load("pipe.png"),
-                transform: Transform::from_xyz(
-                    0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x),
-                    0.5 * -RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
-                    0.0,
-                )
-                .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
-                ..default()
-            })
-            .insert(Name::new("Pipe Block"))
-            .insert(PipeBlock)
-            .insert(
-                Movable::builder()
-                    .velocity(Vec3::new(-SPEED, 0.0, 0.0))
-                    .build(),
-            );
-    }
+                builder
+                    .spawn(SpriteBundle {
+                        texture: asset_server.load("pipe.png"),
+                        transform: Transform::from_xyz(
+                            0.0,
+                            0.5 * -RESOLUTION.y + SCALE * ((i as f32 + 0.5) * PIPE_SPRITE_SIZE.y),
+                            0.0,
+                        )
+                        .with_scale(Vec3::new(SCALE, SCALE, 1.0)),
+                        ..default()
+                    })
+                    .insert(Name::new("Pipe Block"))
+                    .insert(PipeBlock);
+            }
+        });
 }
 
 fn despawner(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {

@@ -1,6 +1,6 @@
 use crate::{
     movable::Movable,
-    pipe::{Pipe, PIPE_SPRITE_SIZE},
+    pipe::{PipeBlock, PIPE_SPRITE_SIZE},
     RESOLUTION, SCALE,
 };
 use bevy::{prelude::*, sprite::collide_aabb::collide};
@@ -30,7 +30,7 @@ impl Plugin for PlayerPlugin {
 
 #[derive(Default, Component, Reflect)]
 #[reflect(Component)]
-struct Player;
+pub struct Player;
 
 #[derive(Default, Component, Reflect)]
 #[reflect(Component)]
@@ -108,7 +108,7 @@ fn dead_zone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), W
 fn pipe_collision(
     mut commands: Commands,
     player: Query<(Entity, &GlobalTransform), With<Player>>,
-    pipes: Query<&GlobalTransform, With<Pipe>>,
+    pipes: Query<&GlobalTransform, With<PipeBlock>>,
 ) {
     let Ok((player_entity, player_transform)) = player.get_single() else {
         return;
