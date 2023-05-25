@@ -14,19 +14,23 @@ pub struct PipePlugin;
 
 impl Plugin for PipePlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(SpawnTimer(Timer::new(
-            Duration::from_millis(SPAWN_INTERVAL),
-            TimerMode::Repeating,
-        )))
-        .add_system(spawner)
-        .add_system(despawner);
+        app.register_type::<Pipe>()
+            .init_resource::<SpawnTimer>()
+            .insert_resource(SpawnTimer(Timer::new(
+                Duration::from_millis(SPAWN_INTERVAL),
+                TimerMode::Repeating,
+            )))
+            .add_system(spawner)
+            .add_system(despawner);
     }
 }
 
-#[derive(Component)]
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
 pub struct Pipe;
 
-#[derive(Resource)]
+#[derive(Default, Resource, Reflect)]
+#[reflect(Resource)]
 struct SpawnTimer(Timer);
 
 fn spawner(

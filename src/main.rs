@@ -1,5 +1,6 @@
 use crate::pipe::PipePlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use movable::MovablePlugin;
 use player::PlayerPlugin;
 
@@ -16,6 +17,7 @@ const SCALE: f32 = 4.5;
 
 fn main() {
     App::new()
+        // Plugins
         .add_plugins(
             DefaultPlugins
                 .set(ImagePlugin::default_nearest())
@@ -28,17 +30,19 @@ fn main() {
                     ..default()
                 }),
         )
+        .add_plugin(WorldInspectorPlugin::new())
+        // END
         .insert_resource(ClearColor(Color::rgb_u8(
             BACKGROUND.0,
             BACKGROUND.1,
             BACKGROUND.2,
         )))
         .add_startup_system(spawn_camera)
-        // Plugins
+        // Local Plugins
         .add_plugin(MovablePlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(PipePlugin)
-        //
+        // END
         .run();
 }
 

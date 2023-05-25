@@ -18,7 +18,9 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn)
+        app.register_type::<Player>()
+            .register_type::<Animation>()
+            .add_startup_system(spawn)
             .add_system(animate_sprite)
             .add_system(dead_zone)
             .add_system(pipe_collision)
@@ -26,10 +28,12 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-#[derive(Component)]
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
 struct Player;
 
-#[derive(Component, Default)]
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
 struct Animation {
     timer: Timer,
     index: usize,

@@ -4,11 +4,12 @@ pub struct MovablePlugin;
 
 impl Plugin for MovablePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(apply_movement);
+        app.register_type::<Movable>().add_system(apply_movement);
     }
 }
 
-#[derive(Component)]
+#[derive(Default, Component, Reflect)]
+#[reflect(Component)]
 pub struct Movable {
     acceleration: Vec3,
     velocity: Vec3,
