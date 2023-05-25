@@ -85,7 +85,7 @@ fn spawn(
         });
 }
 
-fn despawn(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<PipeBlock>>) {
+fn despawn(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {
     for (entity, transform) in &pipes {
         if transform.translation().x < -0.5 * (RESOLUTION.x + SCALE * PIPE_SPRITE_SIZE.x) {
             commands.entity(entity).despawn_recursive();
