@@ -25,15 +25,15 @@ impl Plugin for PipePlugin {
     }
 }
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 pub struct Pipe;
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 pub struct PipeBlock;
 
-#[derive(Default, Resource, Reflect)]
+#[derive(Default, Reflect, Resource)]
 #[reflect(Resource)]
 struct SpawnTimer(Timer);
 

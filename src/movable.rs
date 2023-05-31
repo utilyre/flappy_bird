@@ -8,7 +8,7 @@ impl Plugin for MovablePlugin {
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Reflect, Component)]
 #[reflect(Component)]
 pub struct Movable {
     pub acceleration: Vec3,

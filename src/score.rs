@@ -12,15 +12,15 @@ impl Plugin for ScorePlugin {
     }
 }
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 struct ScoreCounted;
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 struct ScoreText;
 
-#[derive(Default, Resource, Reflect)]
+#[derive(Default, Reflect, Resource)]
 #[reflect(Resource)]
 struct Score(u32);
 

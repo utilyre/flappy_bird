@@ -29,11 +29,11 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 pub struct Player;
 
-#[derive(Default, Component, Reflect)]
+#[derive(Default, Reflect, Component)]
 #[reflect(Component)]
 struct Animation {
     timer: Timer,
