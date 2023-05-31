@@ -14,12 +14,11 @@ pub struct PipePlugin;
 
 impl Plugin for PipePlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<PipeBlock>()
+        app.register_type::<Pipe>()
+            .register_type::<PipeBlock>()
+            .register_type::<SpawnTimer>()
             .init_resource::<SpawnTimer>()
-            .insert_resource(SpawnTimer(Timer::new(
-                Duration::from_millis(SPAWN_INTERVAL),
-                TimerMode::Repeating,
-            )))
+            .init_resource::<SpawnTimer>()
             .add_system(spawn)
             .add_system(despawn);
     }
@@ -33,9 +32,18 @@ pub struct Pipe;
 #[reflect(Component)]
 pub struct PipeBlock;
 
-#[derive(Default, Reflect, Resource)]
+#[derive(Reflect, Resource)]
 #[reflect(Resource)]
 struct SpawnTimer(Timer);
+
+impl Default for SpawnTimer {
+    fn default() -> Self {
+        Self(Timer::new(
+            Duration::from_millis(SPAWN_INTERVAL),
+            TimerMode::Repeating,
+        ))
+    }
+}
 
 fn spawn(
     mut commands: Commands,
