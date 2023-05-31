@@ -8,56 +8,18 @@ impl Plugin for MovablePlugin {
     }
 }
 
-#[derive(Default, Component, Reflect)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct Movable {
-    acceleration: Vec3,
-    velocity: Vec3,
+    pub acceleration: Vec3,
+    pub velocity: Vec3,
 }
 
-impl Movable {
-    pub fn builder() -> MovableBuilder {
-        MovableBuilder::new()
-    }
-
-    pub fn set_velocity(&mut self, value: Vec3) {
-        self.velocity = value;
-    }
-}
-
-pub struct MovableBuilder {
-    acceleration: Vec3,
-    velocity: Vec3,
-}
-
-impl Default for MovableBuilder {
+impl Default for Movable {
     fn default() -> Self {
         Self {
             acceleration: Vec3::splat(1.0),
             velocity: Vec3::splat(0.0),
-        }
-    }
-}
-
-impl MovableBuilder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn acceleration(mut self, acceleration: Vec3) -> Self {
-        self.acceleration = acceleration;
-        self
-    }
-
-    pub fn velocity(mut self, velocity: Vec3) -> Self {
-        self.velocity = velocity;
-        self
-    }
-
-    pub fn build(self) -> Movable {
-        Movable {
-            acceleration: self.acceleration,
-            velocity: self.velocity,
         }
     }
 }

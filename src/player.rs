@@ -138,12 +138,10 @@ fn start_game(
     };
 
     if keyboard.just_pressed(KeyCode::Space) {
-        commands.entity(entity).insert(
-            Movable::builder()
-                .acceleration(SCALE * GRAVITY * Vec3::Y)
-                .velocity(JUMP_FORCE * Vec3::Y)
-                .build(),
-        );
+        commands.entity(entity).insert(Movable {
+            acceleration: SCALE * GRAVITY * Vec3::Y,
+            velocity: JUMP_FORCE * Vec3::Y,
+        });
     }
 }
 
@@ -153,6 +151,6 @@ fn handle_input(mut player: Query<&mut Movable, With<Player>>, keyboard: Res<Inp
     };
 
     if keyboard.just_pressed(KeyCode::Space) {
-        movable.set_velocity(JUMP_FORCE * Vec3::Y);
+        movable.velocity = JUMP_FORCE * Vec3::Y;
     }
 }

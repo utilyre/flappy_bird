@@ -60,7 +60,10 @@ fn spawn(
         })
         .insert(Name::new("Pipe"))
         .insert(Pipe)
-        .insert(Movable::builder().velocity(SPEED * Vec3::NEG_X).build())
+        .insert(Movable {
+            velocity: SPEED * Vec3::NEG_X,
+            ..default()
+        })
         .with_children(|builder| {
             let empty_idx = rand::thread_rng().gen_range(1..COLUMN_SIZE - EMPTY_COLUMNS);
             for i in 0..COLUMN_SIZE {
