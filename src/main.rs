@@ -4,11 +4,13 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use movable::MovablePlugin;
 use player::PlayerPlugin;
 use score::ScorePlugin;
+use states::game::GameStatePlugin;
 
 mod movable;
 mod pipe;
 mod player;
 mod score;
+mod states;
 
 const BACKGROUND: Color = Color::rgb(0.12, 0.14, 0.15);
 const RESOLUTION: Vec2 = Vec2::new(1280.0, 720.0);
@@ -37,6 +39,7 @@ fn main() {
         .insert_resource(ClearColor(BACKGROUND))
         .add_startup_system(spawn_camera)
         // Local Plugins
+        .add_plugin(GameStatePlugin)
         .add_plugin(MovablePlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(PipePlugin)

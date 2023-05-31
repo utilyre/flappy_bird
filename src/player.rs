@@ -1,6 +1,7 @@
 use crate::{
     movable::Movable,
     pipe::{PipeBlock, PIPE_SPRITE_SIZE},
+    states::GameState,
     RESOLUTION, SCALE,
 };
 use bevy::{prelude::*, sprite::collide_aabb::collide};
@@ -21,6 +22,7 @@ impl Plugin for PlayerPlugin {
         app.register_type::<Player>()
             .register_type::<Animation>()
             .add_startup_system(spawn)
+            .add_system(insert_movable.in_schedule(OnEnter(GameState::Playing)))
             .add_system(animate_sprite)
             .add_system(check_deadzone)
             .add_system(collide_with_pipe)
@@ -70,6 +72,17 @@ fn spawn(
             ),
             ..default()
         });
+}
+
+fn insert_movable(mut commands: Commands, player: Query<Entity, (With<Player>, Without<Movable>)>) {
+    let Ok(entity) = player.get_single() else {
+        return;
+    };
+
+    commands.entity(entity).insert(Movable {
+        acceleration: SCALE * GRAVITY * Vec3::Y,
+        velocity: JUMP_FORCE * Vec3::Y,
+    });
 }
 
 fn animate_sprite(
@@ -126,22 +139,9 @@ fn collide_with_pipe(
     }
 }
 
-// TODO: GameState: InGame, Paused, NotStarted
-
-fn start_game(
-    mut commands: Commands,
-    player: Query<Entity, (With<Player>, Without<Movable>)>,
-    keyboard: Res<Input<KeyCode>>,
-) {
-    let Ok(entity) = player.get_single() else {
-        return;
-    };
-
+fn start_game(keyboard: Res<Input<KeyCode>>, mut game_state: ResMut<NextState<GameState>>) {
     if keyboard.just_pressed(KeyCode::Space) {
-        commands.entity(entity).insert(Movable {
-            acceleration: SCALE * GRAVITY * Vec3::Y,
-            velocity: JUMP_FORCE * Vec3::Y,
-        });
+        game_state.set(GameState::Playing);
     }
 }
 
