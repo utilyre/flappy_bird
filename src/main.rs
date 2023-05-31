@@ -16,6 +16,7 @@ const BACKGROUND: Color = Color::rgb(0.12, 0.14, 0.15);
 const RESOLUTION: Vec2 = Vec2::new(1280.0, 720.0);
 const SCALE: f32 = 4.5;
 
+// TODO: Parallax background
 // TODO: Add enemies
 // TODO: Collective coins
 
