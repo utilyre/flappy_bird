@@ -10,7 +10,7 @@ mod pipe;
 mod player;
 mod score;
 
-const BACKGROUND: (u8, u8, u8) = (30, 35, 37);
+const BACKGROUND: Color = Color::rgb(0.12, 0.14, 0.15);
 const RESOLUTION: Vec2 = Vec2::new(1280.0, 720.0);
 const SCALE: f32 = 4.5;
 
@@ -34,11 +34,7 @@ fn main() {
         )
         .add_plugin(WorldInspectorPlugin::new())
         // END
-        .insert_resource(ClearColor(Color::rgb_u8(
-            BACKGROUND.0,
-            BACKGROUND.1,
-            BACKGROUND.2,
-        )))
+        .insert_resource(ClearColor(BACKGROUND))
         .add_startup_system(spawn_camera)
         // Local Plugins
         .add_plugin(MovablePlugin)
