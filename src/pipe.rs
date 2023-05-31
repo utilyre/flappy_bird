@@ -18,7 +18,6 @@ impl Plugin for PipePlugin {
             .register_type::<PipeBlock>()
             .register_type::<SpawnTimer>()
             .init_resource::<SpawnTimer>()
-            .init_resource::<SpawnTimer>()
             .add_system(spawn)
             .add_system(despawn);
     }
