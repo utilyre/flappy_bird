@@ -23,10 +23,11 @@ impl Plugin for PlayerPlugin {
             .register_type::<Animation>()
             .add_startup_system(spawn)
             .add_system(insert_movable.in_schedule(OnEnter(GameState::Playing)))
-            .add_system(animate_sprite)
+            .add_system(remove_movable.in_schedule(OnExit(GameState::Playing)))
+            .add_system(animate_sprite.in_set(OnUpdate(GameState::Playing)))
             .add_system(check_deadzone)
             .add_system(collide_with_pipe)
-            .add_system(start_game)
+            .add_system(start_game.in_set(OnUpdate(GameState::Passive)))
             .add_system(handle_input);
     }
 }
@@ -85,6 +86,14 @@ fn insert_movable(mut commands: Commands, player: Query<Entity, (With<Player>, W
     });
 }
 
+fn remove_movable(mut commands: Commands, player: Query<Entity, (With<Player>, With<Movable>)>) {
+    let Ok(entity) = player.get_single() else {
+        return;
+    };
+
+    commands.entity(entity).remove::<Movable>();
+}
+
 fn animate_sprite(
     mut animations: Query<(&mut TextureAtlasSprite, &mut Animation)>,
     time: Res<Time>,
@@ -100,8 +109,11 @@ fn animate_sprite(
     }
 }
 
-fn check_deadzone(mut commands: Commands, player: Query<(Entity, &GlobalTransform), With<Player>>) {
-    let Ok((entity, transform)) = player.get_single() else {
+fn check_deadzone(
+    mut game_state: ResMut<NextState<GameState>>,
+    player: Query<&GlobalTransform, With<Player>>,
+) {
+    let Ok(transform) = player.get_single() else {
         return;
     };
 
@@ -109,17 +121,16 @@ fn check_deadzone(mut commands: Commands, player: Query<(Entity, &GlobalTransfor
     if y <= -0.5 * (RESOLUTION.y + SCALE * PLAYER_SPRITE_SIZE.y)
         || y >= 0.5 * (RESOLUTION.y + SCALE * PLAYER_SPRITE_SIZE.y)
     {
-        // TODO: pause the game and show "You Lost!" UI
-        commands.entity(entity).despawn_recursive();
+        game_state.set(GameState::Over);
     }
 }
 
 fn collide_with_pipe(
-    mut commands: Commands,
-    player: Query<(Entity, &GlobalTransform), With<Player>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    player: Query<&GlobalTransform, With<Player>>,
     pipes: Query<&GlobalTransform, With<PipeBlock>>,
 ) {
-    let Ok((player_entity, player_transform)) = player.get_single() else {
+    let Ok(player_transform) = player.get_single() else {
         return;
     };
 
@@ -132,8 +143,7 @@ fn collide_with_pipe(
         );
 
         if collision.is_some() {
-            // TODO: pause the game and show "You Lost!" UI
-            commands.entity(player_entity).despawn_recursive();
+            game_state.set(GameState::Over);
             break;
         }
     }

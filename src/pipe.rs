@@ -19,6 +19,7 @@ impl Plugin for PipePlugin {
             .register_type::<SpawnTimer>()
             .add_system(init_timer.in_schedule(OnEnter(GameState::Playing)))
             .add_system(spawn.in_set(OnUpdate(GameState::Playing)))
+            .add_system(remove_movable.in_schedule(OnExit(GameState::Playing)))
             .add_system(despawn.in_set(OnUpdate(GameState::Playing)));
     }
 }
@@ -97,6 +98,12 @@ fn spawn(
     }
 
     spawn_timer.0.tick(time.delta());
+}
+
+fn remove_movable(mut commands: Commands, pipes: Query<Entity, With<Pipe>>) {
+    for entity in &pipes {
+        commands.entity(entity).remove::<Movable>();
+    }
 }
 
 fn despawn(mut commands: Commands, pipes: Query<(Entity, &GlobalTransform), With<Pipe>>) {

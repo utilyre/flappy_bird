@@ -13,4 +13,5 @@ pub enum GameState {
     #[default]
     Passive,
     Playing,
+    Over,
 }
