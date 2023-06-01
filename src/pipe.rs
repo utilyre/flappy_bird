@@ -100,7 +100,7 @@ fn spawn(
     spawn_timer.0.tick(time.delta());
 }
 
-fn remove_movable(mut commands: Commands, pipes: Query<Entity, With<Pipe>>) {
+fn remove_movable(mut commands: Commands, pipes: Query<Entity, (With<Pipe>, With<Movable>)>) {
     for entity in &pipes {
         commands.entity(entity).remove::<Movable>();
     }

@@ -21,14 +21,17 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Player>()
             .register_type::<Animation>()
-            .add_startup_system(spawn)
+            .add_system(spawn.in_schedule(OnEnter(GameState::Passive)))
             .add_system(insert_movable.in_schedule(OnEnter(GameState::Playing)))
             .add_system(remove_movable.in_schedule(OnExit(GameState::Playing)))
-            .add_system(animate_sprite.in_set(OnUpdate(GameState::Playing)))
-            .add_system(check_deadzone)
-            .add_system(collide_with_pipe)
+            .add_systems((
+                animate_sprite.in_set(OnUpdate(GameState::Passive)),
+                animate_sprite.in_set(OnUpdate(GameState::Playing)),
+            ))
+            .add_system(check_deadzone.in_set(OnUpdate(GameState::Playing)))
+            .add_system(collide_with_pipe.in_set(OnUpdate(GameState::Playing)))
             .add_system(start_game.in_set(OnUpdate(GameState::Passive)))
-            .add_system(handle_input);
+            .add_system(handle_input.in_set(OnUpdate(GameState::Playing)));
     }
 }
 

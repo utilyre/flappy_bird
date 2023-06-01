@@ -5,8 +5,7 @@ pub struct ScorePlugin;
 
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
-        app
-            .register_type::<ScoreCounted>()
+        app.register_type::<ScoreCounted>()
             .register_type::<ScoreText>()
             .register_type::<Score>()
             .init_resource::<Score>()
