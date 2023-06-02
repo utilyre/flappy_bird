@@ -68,6 +68,7 @@ fn spawn(
             })
             .insert(Name::new("Pipe"))
             .insert(Pipe)
+            // FIXME: synchronize all movable pipes
             .insert(Movable {
                 velocity: SPEED * Vec3::NEG_X,
                 ..default()
