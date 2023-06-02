@@ -29,10 +29,10 @@ fn apply_movement(mut movables: Query<(&mut Movable, &mut Transform)>, time: Res
         let a = movable.acceleration;
         let dt = time.delta_seconds();
 
-        // Δx = ½aΔt² + v₀t
+        // Δx = ½aΔt² + v₀Δt
         transform.translation += 0.5 * a * dt.powi(2) + movable.velocity * dt;
 
-        // Δv = at
+        // Δv = aΔt
         movable.velocity += a * dt;
     }
 }
