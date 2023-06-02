@@ -19,7 +19,7 @@ impl Plugin for PipePlugin {
             .register_type::<SpawnTimer>()
             .add_system(init_timer.in_schedule(OnEnter(GameState::Playing)))
             .add_system(spawn.in_set(OnUpdate(GameState::Playing)))
-            .add_system(remove_movable.in_schedule(OnExit(GameState::Playing)))
+            .add_system(stop_pipes.in_schedule(OnExit(GameState::Playing)))
             .add_system(despawn.in_set(OnUpdate(GameState::Playing)));
     }
 }
@@ -55,6 +55,7 @@ fn spawn(
     time: Res<Time>,
     mut spawn_timer: ResMut<SpawnTimer>,
 ) {
+    // TODO: make it distance based instead of time based
     if spawn_timer.0.just_finished() {
         commands
             .spawn(SpatialBundle {
@@ -99,9 +100,9 @@ fn spawn(
     spawn_timer.0.tick(time.delta());
 }
 
-fn remove_movable(mut commands: Commands, pipes: Query<Entity, (With<Pipe>, With<Movable>)>) {
-    for entity in &pipes {
-        commands.entity(entity).remove::<Movable>();
+fn stop_pipes(mut pipes: Query<&mut Movable, With<Pipe>>) {
+    for mut movable in &mut pipes {
+        *movable = Movable::default();
     }
 }
 
