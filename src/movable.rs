@@ -19,7 +19,7 @@ impl Default for Movable {
     fn default() -> Self {
         Self {
             acceleration: Vec3::splat(1.0),
-            velocity: Vec3::splat(0.0),
+            velocity: Vec3::ZERO,
         }
     }
 }
