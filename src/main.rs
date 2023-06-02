@@ -1,5 +1,5 @@
 use crate::pipe::PipePlugin;
-use bevy::prelude::*;
+use bevy::{input::common_conditions::input_toggle_active, prelude::*};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use movable::MovablePlugin;
 use player::PlayerPlugin;
@@ -35,7 +35,9 @@ fn main() {
                     ..default()
                 }),
         )
-        .add_plugin(WorldInspectorPlugin::new())
+        .add_plugin(
+            WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::LShift)),
+        )
         // END
         .insert_resource(ClearColor(BACKGROUND))
         .add_startup_system(spawn_camera)
